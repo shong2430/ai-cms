@@ -1,9 +1,15 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma"; // 確保有這個檔案
 
-export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
+type PageProps = {
+  params: {
+    slug: string;
+  };
+};
+export default async function BlogPage({ params }: PageProps) {
+  const { slug } = params;
   const post = await prisma.post.findUnique({
-    where: { id: Number(params.slug) },
+    where: { id: Number(slug) },
   });
 
   if (!post) return notFound();
