@@ -24,15 +24,3 @@ export async function GET() {
   });
   return NextResponse.json(posts);
 }
-
-export async function GETBYID(_: NextRequest, { params }: { params: { id: string } }) {
-  const post = await prisma.post.findUnique({
-    where: { id: Number(params.id) },
-  });
-
-  if (!post) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
-  }
-
-  return NextResponse.json(post);
-}
