@@ -1,0 +1,7 @@
+.tiptap-editor {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 150px;
+  background: white;
+}

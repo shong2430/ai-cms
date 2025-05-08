@@ -1,6 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
+import toast from "react-hot-toast";
+
+const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
+  ssr: false,
+});
 
 export default function AdminPage() {
   const [title, setTitle] = useState("");
@@ -11,20 +17,33 @@ export default function AdminPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        prompt: `請幫我寫一段文章內容，主題是：「${title || "AI 在內容創作的應用"}」`,
+        prompt: `請幫我寫一段文章內容，主題是：「${
+          title || "AI 在內容創作的應用"
+        }」`,
       }),
     });
-    const data = await res.json();
-    setContent(data.result || "（AI 回應失敗）");
-  };
-  
 
-  const handleSubmit = (e: React.FormEvent) => {
+    const data = await res.json();
+    setContent(`<p>${data.result}</p>`);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("🚀 儲存文章：", { title, content });
-    alert("✅ 模擬文章已儲存（實際串接資料庫之後會補）");
-    setTitle("");
-    setContent("");
+
+    const res = await fetch("/api/post", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, content }),
+    });
+    const data = await res.json();
+    console.log("res：", data);
+    if (res.ok) {
+      toast.success("success");
+      setTitle("");
+      setContent("");
+    } else {
+      toast.error("fail");
+    }
   };
 
   return (
@@ -40,16 +59,12 @@ export default function AdminPage() {
             placeholder="輸入文章標題"
           />
         </div>
+
         <div>
           <label className="block text-sm font-medium mb-1">內文</label>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            rows={6}
-            className="w-full border rounded px-3 py-2"
-            placeholder="輸入文章內文"
-          />
+          <RichTextEditor value={content} onChange={setContent} />
         </div>
+
         <div className="flex gap-4">
           <button
             type="button"
