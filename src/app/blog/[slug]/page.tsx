@@ -1,15 +1,19 @@
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma"; // 確保有這個檔案
+import { prisma } from "@/lib/prisma";
 
 type PageProps = {
   params: {
     slug: string;
   };
 };
+
 export default async function BlogPage({ params }: PageProps) {
-  const { slug } = params;
+  const postId = Number(params.slug);
+
+  if (isNaN(postId)) return notFound();
+
   const post = await prisma.post.findUnique({
-    where: { id: Number(slug) },
+    where: { id: postId },
   });
 
   if (!post) return notFound();
