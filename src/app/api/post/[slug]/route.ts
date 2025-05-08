@@ -1,14 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-type Params = {
-  params: {
-    slug: string;
-  };
-};
-
-export async function GET(req: NextRequest, { params }: Params) {
-  const postId = Number(params.slug);
+export async function GET(req: NextRequest, context: { params: { slug: string } }) {
+  const postId = Number(context.params.slug);
 
   if (isNaN(postId)) {
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
