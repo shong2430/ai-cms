@@ -15,7 +15,7 @@ export async function POST(req: Request) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "gpt-3.5-turbo", 
+      model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: "你是一位寫作助理。" },
         { role: "user", content: prompt },
@@ -31,6 +31,7 @@ export async function POST(req: Request) {
     const result = data.choices?.[0]?.message?.content || "(無內容回傳)";
     return NextResponse.json({ result });
   } catch (err) {
-    return NextResponse.json({ error: "❌ JSON 解析失敗", raw: text }, { status: 500 });
+    console.error("GPT JSON parse error:", err); // ✅ 用掉 err
+    return NextResponse.json({ error: "JSON 解析失敗" }, { status: 500 });
   }
 }
