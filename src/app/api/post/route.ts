@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
-  const { title, content } = await req.json();
+  const { title, content, imageUrl } = await req.json();
 
   if (!title || !content) {
     return NextResponse.json({ error: "標題與內文皆為必填" }, { status: 400 });
@@ -12,11 +12,13 @@ export async function POST(req: NextRequest) {
     data: {
       title,
       content,
+      imageUrl
     },
   });
 
   return NextResponse.json(post);
 }
+
 
 export async function GET() {
   const posts = await prisma.post.findMany({

@@ -42,9 +42,22 @@ export default function BlogDetailPage() {
 
   return (
     <main className="max-w-3xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
-      <div className="text-sm text-gray-500 mb-4">
-        熊揆元 · {new Date(post.createdAt).toLocaleDateString("zh-TW")}
+      <div className="flex justify-between items-center mb-[30px]">
+        <div className="w-1/2">
+          <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
+          <div className="text-sm text-gray-500 mb-4">
+            熊揆元 · {new Date(post.createdAt).toLocaleDateString("zh-TW")}
+          </div>
+        </div>
+        {post.imageUrl && (
+          <div className="w-1/2">
+            <img
+              src={post.imageUrl}
+              alt="AI 封面圖"
+              className="rounded shadow"
+            />
+          </div>
+        )}
       </div>
       <article
         className="prose max-w-none"

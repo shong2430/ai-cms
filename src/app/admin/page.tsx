@@ -11,9 +11,11 @@ const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
 export default function AdminPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [isLoadingImage, setIsLoadingImage] = useState(false);
 
   const handleGenerate = async () => {
-    const res = await fetch("/api/gpt", {
+    const gptRes = await fetch("/api/gpt", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -23,8 +25,27 @@ export default function AdminPage() {
       }),
     });
 
-    const data = await res.json();
-    setContent(`<p>${data.result}</p>`);
+    const gptData = await gptRes.json();
+    setContent(`<p>${gptData.result}</p>`);
+
+    setIsLoadingImage(true);
+    setImageUrl("");
+    try {
+      const imageRes = await fetch("/api/image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: title || "AI in content creation",
+        }),
+      });
+
+      const imageData = await imageRes.json();
+      setImageUrl(imageData.url || "");
+    } catch (error) {
+      console.error("圖片生成失敗", error);
+    } finally {
+      setIsLoadingImage(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,7 +54,7 @@ export default function AdminPage() {
     const res = await fetch("/api/post", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, content }),
+      body: JSON.stringify({ title, content, imageUrl }),
     });
     const data = await res.json();
     console.log("res：", data);
@@ -41,6 +62,7 @@ export default function AdminPage() {
       toast.success("success");
       setTitle("");
       setContent("");
+      setImageUrl("");
     } else {
       toast.error("fail");
     }
@@ -64,6 +86,39 @@ export default function AdminPage() {
           <label className="block text-sm font-medium mb-1">內文</label>
           <RichTextEditor value={content} onChange={setContent} />
         </div>
+
+        {isLoadingImage && (
+          <div className="flex items-center gap-2 text-sm text-gray-500 mt-4">
+            <svg
+              className="w-5 h-5 animate-spin text-purple-500"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              />
+            </svg>
+            AI 正在產生封面圖片，請稍等...
+          </div>
+        )}
+
+        {imageUrl && !isLoadingImage && (
+          <div className="mt-4">
+            <p className="text-sm text-gray-500 mb-2">✨ AI 產生的封面圖：</p>
+            <img src={imageUrl} alt="AI 封面圖" className="rounded shadow" />
+          </div>
+        )}
 
         <div className="flex gap-4">
           <button
