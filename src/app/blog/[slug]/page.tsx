@@ -46,7 +46,7 @@ export default function BlogDetailPage() {
         <div className="w-1/2">
           <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
           <div className="text-sm text-gray-500 mb-4">
-            熊揆元 · {new Date(post.createdAt).toLocaleDateString("zh-TW")}
+            {post.author || <span>unKnown</span>} · {new Date(post.createdAt).toLocaleDateString("zh-TW")}
           </div>
         </div>
         {post.imageUrl && (

@@ -8,6 +8,7 @@ type Post = {
   title: string;
   content: string;
   createdAt: string;
+  author: string;
 };
 
 export default function BlogPage() {
@@ -35,7 +36,8 @@ export default function BlogPage() {
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
               <div className="text-sm text-gray-500 mt-2">
-                {new Date(post.createdAt).toLocaleDateString("zh-TW")} · 系統
+                {new Date(post.createdAt).toLocaleDateString("zh-TW")} ·{" "}
+                {post.author || <span>unKnown</span>}
               </div>
             </Link>
           </div>

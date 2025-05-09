@@ -2,17 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
-  const { title, content, imageUrl } = await req.json();
+  const { title, content, imageUrl, author } = await req.json();
 
-  if (!title || !content) {
-    return NextResponse.json({ error: "標題與內文皆為必填" }, { status: 400 });
+  if (!title || !content || !author) {
+    return NextResponse.json({ error: "標題、內文與作者皆為必填" }, { status: 400 });
   }
 
   const post = await prisma.post.create({
     data: {
       title,
       content,
-      imageUrl
+      imageUrl,
+      author,
     },
   });
 
