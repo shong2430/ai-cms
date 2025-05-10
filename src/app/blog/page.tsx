@@ -16,18 +16,20 @@ export default function BlogPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [allPosts, setAllPosts] = useState<Post[]>([]);
   const [query, setQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const debounceQuery = useDebounce(query, 500);
   useEffect(() => {
     fetch("/api/post")
       .then((res) => res.json())
-      .then(setAllPosts);
+      .then(setAllPosts)
+      .finally(() => setIsLoading(false));
   }, []);
   useEffect(() => {
     if (debounceQuery) {
       let t = allPosts.filter(
         (sss) =>
           sss.title.indexOf(debounceQuery) !== -1 ||
-        sss.author && sss.author.indexOf(debounceQuery) !== -1
+          (sss.author && sss.author.indexOf(debounceQuery) !== -1)
       );
       setPosts(t);
     } else {
@@ -64,27 +66,30 @@ export default function BlogPage() {
           </svg>
         </div>
       </div>
-
-      <div className="space-y-6">
-        {posts.map((post) => (
-          <div
-            key={post.id}
-            className="p-4 border rounded-xl shadow hover:bg-gray-50 transition"
-          >
-            <Link href={`/blog/${post.id}`}>
-              <h2 className="text-xl font-semibold">{post.title}</h2>
-              <p
-                className="text-gray-600 mt-2 line-clamp-2"
-                dangerouslySetInnerHTML={{ __html: post.content }}
-              />
-              <div className="text-sm text-gray-500 mt-2">
-                {new Date(post.createdAt).toLocaleDateString("zh-TW")} ·{" "}
-                {post.author || <span>unKnown</span>}
-              </div>
-            </Link>
-          </div>
-        ))}
-      </div>
+      {isLoading ? (
+        <div>載入中...</div>
+      ) : (
+        <div className="space-y-6">
+          {posts.map((post) => (
+            <div
+              key={post.id}
+              className="p-4 border rounded-xl shadow hover:bg-gray-50 transition"
+            >
+              <Link href={`/blog/${post.id}`}>
+                <h2 className="text-xl font-semibold">{post.title}</h2>
+                <p
+                  className="text-gray-600 mt-2 line-clamp-2"
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                />
+                <div className="text-sm text-gray-500 mt-2">
+                  {new Date(post.createdAt).toLocaleDateString("zh-TW")} ·{" "}
+                  {post.author || <span>unKnown</span>}
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+      )}
     </main>
   );
 }

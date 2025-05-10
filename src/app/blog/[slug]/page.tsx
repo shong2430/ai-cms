@@ -54,7 +54,8 @@ export default function BlogDetailPage() {
             <img
               src={post.imageUrl}
               alt="AI 封面圖"
-              className="rounded shadow"
+              className="rounded shadow aspect-square
+"
             />
           </div>
         )}

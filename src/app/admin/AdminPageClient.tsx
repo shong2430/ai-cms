@@ -17,8 +17,10 @@ export default function AdminPage({ author }: Props) {
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isLoadingImage, setIsLoadingImage] = useState(false);
+  const [isAILoading, setIsAILoading] = useState(false);
 
   const handleGenerate = async () => {
+    setIsAILoading(true);
     const gptRes = await fetch("/api/gpt", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -43,12 +45,20 @@ export default function AdminPage({ author }: Props) {
         }),
       });
 
-      const imageData = await imageRes.json();
-      setImageUrl(imageData.url || "");
+      const openAiUrl = (await imageRes.json()).url;
+      const uploadRes = await fetch("/api/upload-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl: openAiUrl }),
+      });
+
+      const finalImageUrl = (await uploadRes.json()).url;
+      setImageUrl(finalImageUrl);
     } catch (error) {
       console.error("圖片生成失敗", error);
     } finally {
       setIsLoadingImage(false);
+      setIsAILoading(false);
     }
   };
 
@@ -129,13 +139,39 @@ export default function AdminPage({ author }: Props) {
           <button
             type="button"
             onClick={handleGenerate}
-            className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+            className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 cursor-pointer"
           >
-            ✨ AI 協助產生段落
+            {isAILoading ? (
+              <svg
+                className="w-5 h-5 animate-spin text-white-500"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                />
+              </svg>
+            ) : (
+              <span>✨ AI 協助產生段落</span>
+            )}
           </button>
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className={`bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 ${
+              isAILoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+            }`}
+            disabled={isAILoading}
           >
             💾 儲存文章
           </button>
