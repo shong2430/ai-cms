@@ -1,47 +1,39 @@
-"use client";
+import { prisma } from "@/lib/prisma";
+import { notFound } from "next/navigation";
+import type { Metadata } from 'next';
 
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const post = await prisma.post.findUnique({
+    where: { id: Number(params.slug) },
+  });
 
-export default function BlogDetailPage() {
-  const { slug } = useParams();
-  const [post, setPost] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  if (!post) return {};
 
-  useEffect(() => {
-    if (!slug) return;
+  return {
+    title: `${post.title} | AI CMS`,
+    description: post.content.slice(0, 100),
+    openGraph: {
+      title: post.title,
+      description: post.content.slice(0, 100),
+      images: post.imageUrl ? [{ url: post.imageUrl }] : undefined,
+    },
+  };
+}
 
-    setLoading(true);
+export default async function BlogDetailPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const post = await prisma.post.findUnique({
+    where: { id: Number(params.slug) },
+  });
 
-    fetch(`/api/post?id=${slug}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setPost(data || null);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch post:", err);
-        setPost(null);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [slug]);
-
-  if (loading) {
-    return (
-      <main className="max-w-3xl mx-auto p-6">
-        <p className="text-gray-500 animate-pulse">載入文章中...</p>
-      </main>
-    );
-  }
-
-  if (!post) {
-    return (
-      <main className="max-w-3xl mx-auto p-6">
-        <p className="text-red-500">找不到文章</p>
-      </main>
-    );
-  }
+  if (!post) return notFound();
 
   return (
     <main className="max-w-3xl mx-auto p-6">
@@ -58,8 +50,7 @@ export default function BlogDetailPage() {
             <img
               src={post.imageUrl}
               alt="AI 封面圖"
-              className="rounded shadow aspect-square
-"
+              className="rounded shadow aspect-square"
             />
           </div>
         )}
