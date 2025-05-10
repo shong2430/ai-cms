@@ -2,12 +2,13 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Record<string, string>;
+export type paramsType = Promise<{ slug: string }>;
+
+export async function generateMetadata(props: {
+  params: paramsType;
 }): Promise<Metadata> {
-  const id = Number(params.slug);
+  const { slug } = await props.params;
+  const id = Number(slug);
   if (isNaN(id)) return {};
 
   const post = await prisma.post.findUnique({ where: { id } });
@@ -26,12 +27,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogDetailPage({
-  params,
-}: {
-  params: Record<string, string>;
-}) {
-  const id = Number(params.slug);
+export default async function BlogDetailPage(props: { params: paramsType }) {
+  const { slug } = await props.params;
+  const id = Number(slug);
   if (isNaN(id)) return notFound();
 
   const post = await prisma.post.findUnique({ where: { id } });
@@ -52,7 +50,7 @@ export default async function BlogDetailPage({
             <img
               src={post.imageUrl}
               alt="AI 封面圖"
-              className="rounded shadow aspect-square"
+              className="w-full rounded shadow aspect-square"
             />
           </div>
         )}
