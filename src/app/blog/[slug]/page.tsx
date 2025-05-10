@@ -1,16 +1,15 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import type { Metadata } from 'next';
+import type { Metadata } from "next";
 
-export async function generateMetadata({
-  params,
-}: {
+type Props = {
   params: { slug: string };
-}): Promise<Metadata> {
-  const post = await prisma.post.findUnique({
-    where: { id: Number(params.slug) },
-  });
+};
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const id = Number(params.slug);
+  if (isNaN(id)) return {};
+  const post = await prisma.post.findUnique({ where: { id } });
   if (!post) return {};
 
   return {
@@ -24,15 +23,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogDetailPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const post = await prisma.post.findUnique({
-    where: { id: Number(params.slug) },
-  });
+export default async function BlogDetailPage({ params }: Props) {
+  const id = Number(params.slug);
+  if (isNaN(id)) return notFound();
 
+  const post = await prisma.post.findUnique({ where: { id } });
   if (!post) return notFound();
 
   return (
