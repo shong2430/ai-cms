@@ -25,6 +25,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+          <head>
+        {/* Swiper CDN CSS */}
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/swiper@10/swiper-bundle.min.css"
+        />
+        {/* Swiper CDN JS */}
+        <script
+          src="https://unpkg.com/swiper@10/swiper-bundle.min.js"
+          defer
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
