@@ -21,9 +21,28 @@ export async function POST(req: NextRequest) {
 }
 
 
-export async function GET() {
+
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const idParam = searchParams.get('id');
+  const id = idParam ? parseInt(idParam, 10) : undefined;
+  if (id) {
+    // 回傳單篇文章
+    const post = await prisma.post.findUnique({
+      where: { id },
+    });
+
+    if (!post) {
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(post);
+  }
+
+  // 沒有 id，回傳全部文章
   const posts = await prisma.post.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
   });
+
   return NextResponse.json(posts);
 }
