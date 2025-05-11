@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://ai-cms-mocha.vercel.app/
+
+# Sitemaps
+Sitemap: https://ai-cms-mocha.vercel.app/sitemap.xml
