@@ -5,10 +5,7 @@ export async function POST(req: NextRequest) {
   const { title, content, imageUrl, author } = await req.json();
 
   if (!title || !content || !author) {
-    return NextResponse.json(
-      { error: "標題、內文與作者皆為必填" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "標題、內文與作者皆為必填" }, { status: 400 });
   }
 
   const post = await prisma.post.create({
@@ -23,23 +20,28 @@ export async function POST(req: NextRequest) {
   return NextResponse.json(post);
 }
 
+
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const idParam = searchParams.get("id");
+  const idParam = searchParams.get('id');
   const id = idParam ? parseInt(idParam, 10) : undefined;
   if (id) {
+    // 回傳單篇文章
     const post = await prisma.post.findUnique({
       where: { id },
     });
 
     if (!post) {
-      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
     return NextResponse.json(post);
   }
+
+  // 沒有 id，回傳全部文章
   const posts = await prisma.post.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
   });
 
   return NextResponse.json(posts);
