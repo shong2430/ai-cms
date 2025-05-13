@@ -1,36 +1,38 @@
-'use client'
+"use client";
 
-import React, { useState, useMemo } from 'react'
-import Link from 'next/link'
-import useDebounce from '@/hooks/useDebounce'
-import { useQuery } from '@tanstack/react-query'
+import React, { useState, useMemo } from "react";
+import Link from "next/link";
+import useDebounce from "@/hooks/useDebounce";
+import { useQuery } from "@tanstack/react-query";
 
 type Post = {
-  id: number
-  title: string
-  content: string
-  createdAt: string
-  author: string
-}
+  id: number;
+  title: string;
+  content: string;
+  createdAt: string;
+  author: string;
+};
 
 export default function BlogPage() {
-  const [query, setQuery] = useState('')
-  const debounceQuery = useDebounce(query, 500)
+  const [query, setQuery] = useState("");
+  const debounceQuery = useDebounce(query, 500);
 
   const { data: allPosts = [], isLoading } = useQuery<Post[]>({
-    queryKey: ['posts'],
-    queryFn: () => fetch('/api/post').then((res) => res.json()),
+    queryKey: ["posts"],
+    queryFn: () => fetch("/api/post").then((res) => res.json()),
     staleTime: 1000 * 60 * 5,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-  })
+  });
 
   const posts = useMemo(() => {
-    if (!debounceQuery) return allPosts
+    if (!debounceQuery) return allPosts;
     return allPosts.filter(
-      (p) => p.title.includes(debounceQuery) || (p.author && p.author.includes(debounceQuery))
-    )
-  }, [debounceQuery, allPosts])
+      (p) =>
+        p.title.includes(debounceQuery) ||
+        (p.author && p.author.includes(debounceQuery))
+    );
+  }, [debounceQuery, allPosts]);
 
   return (
     <main className="max-w-3xl mx-auto p-6">
@@ -66,7 +68,10 @@ export default function BlogPage() {
       ) : (
         <div className="space-y-6">
           {posts.map((post) => (
-            <div key={post.id} className="p-4 border rounded-xl shadow hover:bg-gray-50 transition">
+            <div
+              key={post.id}
+              className="p-4 border rounded-xl shadow hover:bg-gray-50 transition"
+            >
               <Link href={`/blog/${post.id}`}>
                 <h2 className="text-xl font-semibold">{post.title}</h2>
                 <p
@@ -74,7 +79,7 @@ export default function BlogPage() {
                   dangerouslySetInnerHTML={{ __html: post.content }}
                 />
                 <div className="text-sm text-gray-500 mt-2">
-                  {new Date(post.createdAt).toLocaleDateString('zh-TW')} ·{' '}
+                  {new Date(post.createdAt).toLocaleDateString("zh-TW")} ·{" "}
                   {post.author || <span>unKnown</span>}
                 </div>
               </Link>
@@ -83,5 +88,5 @@ export default function BlogPage() {
         </div>
       )}
     </main>
-  )
+  );
 }

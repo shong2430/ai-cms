@@ -24,12 +24,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "src/components/RichTextEditor.jsx"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/RichTextEditor.jsx"],
   "exclude": ["node_modules"]
 }

@@ -1,39 +1,31 @@
-import { useRef } from 'react'
-import JoditEditor from 'jodit-react'
+import { useRef } from "react";
+import JoditEditor from "jodit-react";
 
 export default function RichTextEditor({ value, onChange }) {
-  const editor = useRef(null)
+  const editor = useRef(null);
 
   const config = {
     readonly: false,
     style: {
-      color: '#212529',
+      color: "#212529",
     },
     toolbar: true,
     buttons: [
-      'bold',
-      'italic',
-      'underline',
-      'strikethrough',
-      '|',
-      'fontsize',
-      'brush',
-      'paragraph',
-      '|',
-      'align',
-      'undo',
-      'redo',
-      '|',
-      'hr',
-      'eraser',
-      'copyformat',
-      '|',
-      'fullsize',
-      'print',
-      'about',
+      "bold", "italic", "underline", "strikethrough",
+      "|", "fontsize", "brush", "paragraph",
+      "|", "align", "undo", "redo",
+      "|", "hr", "eraser", "copyformat",
+      "|", "fullsize", "print", "about"
     ],
-    colorPickerDefaultTab: 'color',
-  }
+    colorPickerDefaultTab: "color",
+  };
 
-  return <JoditEditor ref={editor} value={value} config={config} onBlur={onChange} />
+  return (
+    <JoditEditor
+      ref={editor}
+      value={value}
+      config={config}
+      onBlur={onChange}
+    />
+  );
 }

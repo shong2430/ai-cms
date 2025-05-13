@@ -1,84 +1,86 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import dynamic from 'next/dynamic'
-import toast from 'react-hot-toast'
+import { useState } from "react";
+import dynamic from "next/dynamic";
+import toast from "react-hot-toast";
 
-const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
+const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
   ssr: false,
-})
+});
 
 type Props = {
-  author: string
-}
+  author: string;
+};
 
 export default function AdminPage({ author }: Props) {
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
-  const [isLoadingImage, setIsLoadingImage] = useState(false)
-  const [isAILoading, setIsAILoading] = useState(false)
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [isLoadingImage, setIsLoadingImage] = useState(false);
+  const [isAILoading, setIsAILoading] = useState(false);
 
   const handleGenerate = async () => {
-    setIsAILoading(true)
-    const gptRes = await fetch('/api/gpt', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    setIsAILoading(true);
+    const gptRes = await fetch("/api/gpt", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        prompt: `請幫我寫一段文章內容，主題是：「${title || 'AI 在內容創作的應用'}」`,
+        prompt: `請幫我寫一段文章內容，主題是：「${
+          title || "AI 在內容創作的應用"
+        }」`,
       }),
-    })
+    });
 
-    const gptData = await gptRes.json()
-    setContent(`<p>${gptData.result}</p>`)
+    const gptData = await gptRes.json();
+    setContent(`<p>${gptData.result}</p>`);
 
-    setIsLoadingImage(true)
-    setImageUrl('')
+    setIsLoadingImage(true);
+    setImageUrl("");
     try {
-      const imageRes = await fetch('/api/image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const imageRes = await fetch("/api/image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          prompt: title || 'AI in content creation',
+          prompt: title || "AI in content creation",
         }),
-      })
+      });
 
-      const openAiUrl = (await imageRes.json()).url
-      const uploadRes = await fetch('/api/upload-image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const openAiUrl = (await imageRes.json()).url;
+      const uploadRes = await fetch("/api/upload-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imageUrl: openAiUrl }),
-      })
+      });
 
-      const finalImageUrl = (await uploadRes.json()).url
-      setImageUrl(finalImageUrl)
+      const finalImageUrl = (await uploadRes.json()).url;
+      setImageUrl(finalImageUrl);
     } catch (error) {
-      console.error('圖片生成失敗', error)
+      console.error("圖片生成失敗", error);
     } finally {
-      setIsLoadingImage(false)
-      setIsAILoading(false)
+      setIsLoadingImage(false);
+      setIsAILoading(false);
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const res = await fetch('/api/post', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/post", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, content, imageUrl, author }),
-    })
-    const data = await res.json()
-    console.log('res：', data)
+    });
+    const data = await res.json();
+    console.log("res：", data);
     if (res.ok) {
-      toast.success('success')
-      setTitle('')
-      setContent('')
-      setImageUrl('')
+      toast.success("success");
+      setTitle("");
+      setContent("");
+      setImageUrl("");
     } else {
-      toast.error('fail')
+      toast.error("fail");
     }
-  }
+  };
 
   return (
     <main className="max-w-2xl mx-auto p-6">
@@ -167,7 +169,7 @@ export default function AdminPage({ author }: Props) {
           <button
             type="submit"
             className={`bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 ${
-              isAILoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+              isAILoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"
             }`}
             disabled={isAILoading}
           >
@@ -176,5 +178,5 @@ export default function AdminPage({ author }: Props) {
         </div>
       </form>
     </main>
-  )
+  );
 }
