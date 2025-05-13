@@ -1,39 +1,35 @@
-import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
-import type { Metadata } from "next";
+import { prisma } from '@/lib/prisma'
+import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
 
-export type paramsType = Promise<{ slug: string }>;
+export type paramsType = Promise<{ slug: string }>
 
-export async function generateMetadata(props: {
-  params: paramsType;
-}): Promise<Metadata> {
-  const { slug } = await props.params;
-  const id = Number(slug);
-  if (isNaN(id)) return {};
+export async function generateMetadata(props: { params: paramsType }): Promise<Metadata> {
+  const { slug } = await props.params
+  const id = Number(slug)
+  if (isNaN(id)) return {}
 
-  const post = await prisma.post.findUnique({ where: { id } });
-  if (!post) return {};
+  const post = await prisma.post.findUnique({ where: { id } })
+  if (!post) return {}
 
   return {
     title: `${post.title} | AI CMS`,
-    description:
-      typeof post.content === "string" ? post.content.slice(0, 100) : "",
+    description: typeof post.content === 'string' ? post.content.slice(0, 100) : '',
     openGraph: {
       title: post.title,
-      description:
-        typeof post.content === "string" ? post.content.slice(0, 100) : "",
+      description: typeof post.content === 'string' ? post.content.slice(0, 100) : '',
       images: post.imageUrl ? [{ url: post.imageUrl }] : undefined,
     },
-  };
+  }
 }
 
 export default async function BlogDetailPage(props: { params: paramsType }) {
-  const { slug } = await props.params;
-  const id = Number(slug);
-  if (isNaN(id)) return notFound();
+  const { slug } = await props.params
+  const id = Number(slug)
+  if (isNaN(id)) return notFound()
 
-  const post = await prisma.post.findUnique({ where: { id } });
-  if (!post) return notFound();
+  const post = await prisma.post.findUnique({ where: { id } })
+  if (!post) return notFound()
 
   return (
     <main className="max-w-3xl mx-auto p-6">
@@ -41,8 +37,8 @@ export default async function BlogDetailPage(props: { params: paramsType }) {
         <div className="w-1/2">
           <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
           <div className="text-sm text-gray-500 mb-4">
-            {post.author || <span>unKnown</span>} ·{" "}
-            {new Date(post.createdAt).toLocaleDateString("zh-TW")}
+            {post.author || <span>unKnown</span>} ·{' '}
+            {new Date(post.createdAt).toLocaleDateString('zh-TW')}
           </div>
         </div>
         {post.imageUrl && (
@@ -55,10 +51,7 @@ export default async function BlogDetailPage(props: { params: paramsType }) {
           </div>
         )}
       </div>
-      <article
-        className="prose max-w-none"
-        dangerouslySetInnerHTML={{ __html: post.content }}
-      />
+      <article className="prose max-w-none" dangerouslySetInnerHTML={{ __html: post.content }} />
     </main>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import type { NextConfig } from "next";
-const isProd = process.env.NODE_ENV === "production";
+import type { NextConfig } from 'next'
+const isProd = process.env.NODE_ENV === 'production'
 
 const nextConfig: NextConfig = {
   eslint: {
@@ -9,11 +9,11 @@ const nextConfig: NextConfig = {
     if (!isServer && isProd) {
       config.externals = {
         ...config.externals,
-        swiper: "Swiper",
-      };
+        swiper: 'Swiper',
+      }
     }
-    return config;
+    return config
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig
