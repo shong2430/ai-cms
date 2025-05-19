@@ -19,16 +19,19 @@ export function generateStaticParams() {
   return [{ locale: 'en' }, { locale: 'zh' }]
 }
 
+// ✅ 額外加的 type
+type LocaleLayoutProps = {
+  children: ReactNode
+  params: { locale: string }
+}
+
 export default function LocaleLayout({
   children,
   params: { locale },
-}: {
-  children: ReactNode
-  params: { locale: string }
-}) {
+}: LocaleLayoutProps) {
   const messages = useMessages()
-  if (!['en', 'zh'].includes(locale)) {
 
+  if (!['en', 'zh'].includes(locale)) {
     notFound()
   }
 
