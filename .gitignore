@@ -20,3 +20,5 @@ yarn-error.log*
 
 # VSCode 設定（可選）
 .vscode/
+src/hooks/batch.js
+src/hooks/promisepool.js

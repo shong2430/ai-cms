@@ -17,7 +17,12 @@ export default function BlogPage() {
   const [query, setQuery] = useState('')
   const debounceQuery = useDebounce(query, 500)
 
-  const { data: allPosts = [], isLoading } = useQuery<Post[]>({
+  const {
+    data: allPosts = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Post[]>({
     queryKey: ['posts'],
     queryFn: () => fetch('/api/post').then((res) => res.json()),
     staleTime: 1000 * 60 * 5,
@@ -31,7 +36,8 @@ export default function BlogPage() {
       (p) => p.title.includes(debounceQuery) || (p.author && p.author.includes(debounceQuery))
     )
   }, [debounceQuery, allPosts])
-
+  if (isLoading) return <p>Loading...</p>
+  if (isError) return <p>Error: {error.message}</p>
   return (
     <main className="max-w-3xl mx-auto p-6">
       <div className="flex justify-between items-center mb-[30px]">
@@ -61,9 +67,6 @@ export default function BlogPage() {
           </svg>
         </div>
       </div>
-      {isLoading ? (
-        <div>載入中...</div>
-      ) : (
         <div className="space-y-6">
           {posts.map((post) => (
             <div key={post.id} className="p-4 border rounded-xl shadow hover:bg-gray-50 transition">
@@ -81,7 +84,6 @@ export default function BlogPage() {
             </div>
           ))}
         </div>
-      )}
     </main>
   )
 }
