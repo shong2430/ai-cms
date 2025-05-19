@@ -1,6 +1,20 @@
 import Link from 'next/link'
 
+export const metadata = {
+  title: 'AI CMS Demo - 自動生成文章的內容平台',
+  description: '這是一個由 Next.js + Supabase + OpenAI 打造的 AI CMS，支援自動生成內容、部落格前台與後台管理功能。',
+  keywords: 'AI CMS, Next.js, Supabase, OpenAI, 自動產文, Headless CMS, 前台後台, 部落格',
+  openGraph: {
+    title: 'AI CMS Demo',
+    description: '自動生成內容的部落格平台，支援前台瀏覽與後台管理。',
+    url: 'https://ai-cms-mocha.vercel.app/',
+    siteName: 'AI CMS Demo',
+    type: 'website',
+  },
+}
+
 export default function Home() {
+  
   return (
     <main className="flex flex-col items-center justify-center min-h-screen px-4 text-center bg-white">
       <h1 className="text-4xl font-bold mb-4">AI CMS Demo</h1>
