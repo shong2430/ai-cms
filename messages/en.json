@@ -1,0 +1,48 @@
+{
+    "common": {
+      "language": "Language",
+      "english": "English",
+      "chinese": "中文",
+      "home": "Home",
+      "blog": "Blog",
+      "admin": "Admin",
+      "login": "Login",
+      "logout": "Logout"
+    },
+    "home": {
+      "title": "AI CMS Demo",
+      "description": "An AI-powered content platform built with Next.js, Supabase and OpenAI. Automatically generate blog content and manage your site easily.",
+      "goToBlog": "Go to Blog",
+      "goToAdmin": "Go to Admin"
+    },
+    "blog": {
+      "title": "Blog Overview",
+      "readMore": "Read more",
+      "empty": "No articles found."
+    },
+    "admin": {
+      "title": "Admin Panel",
+      "newPost": "New Post",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    },
+    "post": {
+      "title": "Title",
+      "content": "Content",
+      "author": "Author",
+      "publishedAt": "Published at"
+    },
+    "auth": {
+      "signIn": "Sign In",
+      "signOut": "Sign Out",
+      "unauthorized": "You are not authorized to view this page."
+    },
+    "notFound": {
+      "title": "Page Not Found",
+      "description": "Sorry, we couldn't find the page you're looking for.",
+      "backToHome": "Back to Home"
+    }
+  }
+  
