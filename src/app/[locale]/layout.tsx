@@ -4,6 +4,7 @@ import { NextIntlClientProvider, useMessages } from 'next-intl'
 import { Toaster } from 'react-hot-toast'
 import { ReactNode } from 'react'
 import { notFound } from 'next/navigation'
+import { useLocale } from 'next-intl';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -19,17 +20,13 @@ export function generateStaticParams() {
   return [{ locale: 'en' }, { locale: 'zh' }]
 }
 
-// ✅ 額外加的 type
-type LocaleLayoutProps = {
+type Props = {
   children: ReactNode
-  params: { locale: string }
 }
 
-export default function LocaleLayout({
-  children,
-  params: { locale },
-}: LocaleLayoutProps) {
+export default function LocaleLayout({ children }: Props) {
   const messages = useMessages()
+  const locale = useLocale();
 
   if (!['en', 'zh'].includes(locale)) {
     notFound()
